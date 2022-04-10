@@ -108,11 +108,24 @@ void show_histogram_svg(const vector<size_t>& bins) {
         const auto BLOCK_WIDTH = 10;
         svg_begin(IMAGE_WIDTH, IMAGE_HEIGHT);
         double top = 0;
-        for (size_t bin : bins) {
-        const double bin_width = BLOCK_WIDTH * bin;
-        svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
-        svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
-        top += BIN_HEIGHT;
+        const size_t SCREEN_WIDTH = 80;
+        const size_t MAX_ASTERISK = SCREEN_WIDTH - 3 - 1 ;
+        size_t max_bin = bins[0];
+        for (size_t bin : bins){
+            if (bin>max_bin){
+                max_bin=bin;
+            }
+        }
+        for (size_t bin: bins)
+        {
+            double height = bin;
+            if (max_bin > MAX_ASTERISK){
+                height = MAX_ASTERISK * (static_cast<double>(bin)/max_bin);
+            }
+            const double bin_width = BLOCK_WIDTH * height;
+            svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
+            svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
+            top += BIN_HEIGHT;
         }
         svg_end();
     }
