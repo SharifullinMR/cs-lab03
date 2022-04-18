@@ -44,6 +44,15 @@ void svg_text(double left, double baseline, string text){
 void svg_rect(double x, double y, double width, double height,string stroke, string fill){
     cout<<"<rect x='"<<x<<"' y='"<<y<<"' width='"<<width<<"' height='"<<height<<"' stroke='"<<stroke<<"' fill='"<<fill<< "' />";
 }
+void svg_blockwidth(double &BLOCK_WIDTH, bool &block){
+    if(BLOCK_WIDTH < 3  ||  BLOCK_WIDTH > 30){
+        block=true;
+    }
+    else{
+        block=false;
+    }
+
+}
 void show_histogram_svg(const vector<size_t>& bins) {
     {
         const auto IMAGE_WIDTH = 400;
@@ -52,11 +61,16 @@ void show_histogram_svg(const vector<size_t>& bins) {
         const auto TEXT_BASELINE = 20;
         const auto TEXT_WIDTH = 50;
         const auto BIN_HEIGHT = 30;
-        size_t BLOCK_WIDTH;
-        cerr<<"Enter BLOCK_WIDTH : "; cin>>BLOCK_WIDTH;
-        while(BLOCK_WIDTH<3 || BLOCK_WIDTH>30){
-            cerr<<"Limit! Re Enter Block WIDTH : "; cin>>BLOCK_WIDTH;
+        double BLOCK_WIDTH;
+        cerr<<"Enter BLOCK_WIDTH : "; cin>>BLOCK_WIDTH; bool block = true;
+        while(block == true){
+            svg_blockwidth(BLOCK_WIDTH,block);
+            if (block == true){
+                cerr<<"Limit! Re Enter Block WIDTH : "; cin>>BLOCK_WIDTH;
+            }
         }
+
+
         svg_begin(IMAGE_WIDTH, IMAGE_HEIGHT);
         double top = 0;
         const size_t SCREEN_WIDTH = 80;

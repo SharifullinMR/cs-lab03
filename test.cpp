@@ -1,5 +1,5 @@
 #include "histogram.h"
-
+#include "SVG.h"
 #include <cassert>
 
 void
@@ -38,6 +38,16 @@ void test_empty(){
     assert(min == 0);
     assert(max == 0);
 }
+void test_low(){
+    double bw=31; bool pv=true;
+    svg_blockwidth(bw,pv);
+    assert(pv == true);
+}
+void test_correct(){
+    double bw=15; bool pv=true;
+    svg_blockwidth(bw,pv);
+    assert(pv == false);
+}
 int
 main() {
     test_positive();
@@ -45,4 +55,6 @@ main() {
     test_identical();
     test_one();
     test_empty();
+    test_low();
+    test_correct();
 }
