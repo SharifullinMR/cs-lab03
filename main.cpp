@@ -11,6 +11,21 @@ vector<double> input_numbers(istream& in,size_t count){
     }
     return result;
 }
+struct Input{
+    vector<double> numbers;
+    size_t bin_count;
+};
+Input read_input(istream& in){
+    Input data;
+    size_t number_count;
+    cerr<<"Enter number count:";
+    in >> number_count;
+    cerr<<"Enter numbers:";
+    data.numbers = input_numbers(in,number_count);
+    cerr <<"Enter bin count:";
+    in>>data.bin_count;
+    return data;
+}
 vector<size_t> make_histogram(const vector<double> &numbers, size_t bin_count)
 {
     double min,max;
@@ -39,15 +54,8 @@ vector<size_t> make_histogram(const vector<double> &numbers, size_t bin_count)
 }
 int main()
 {
-    size_t number_count;
-    cerr<<"Enter number count:";
-    cin >> number_count;
-    cerr<<"Enter numbers:";
-    const auto numbers = input_numbers(cin,number_count);
-    size_t bin_count;
-    cerr <<"Enter bin count:";
-    cin >> bin_count;
-    const auto bins = make_histogram(numbers,bin_count);
+    const auto input = read_input(cin);
+    const auto bins = make_histogram(input.numbers,input.bin_count);
     show_histogram_svg(bins);
     return 0;
 }
