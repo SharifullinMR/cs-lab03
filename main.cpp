@@ -55,8 +55,15 @@ vector<size_t> make_histogram(Input input)
     }
     return bins;
 }
-int main()
+int main(int argc,char* argv[])
 {
+    if (argc>1){
+        cout<<"argc = "<<argc<<endl;
+        for(size_t i = 0; i<argc; i ++ ){
+            cout<<"argv["<<i<<"] = "<<argv[i]<<endl;
+        }
+        return 0;
+    }
     curl_global_init(CURL_GLOBAL_ALL);
     const auto input = read_input(cin,true);
     const auto bins = make_histogram(input);
