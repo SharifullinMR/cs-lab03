@@ -67,21 +67,26 @@ write_data(void* items, size_t item_size, size_t item_count, void* ctx) {
 Input
 download(const string& address) {
     stringstream buffer;
+    curl_global_init(CURL_GLOBAL_ALL);
     CURL* curl = curl_easy_init();
     if(curl){
-        CURLcode res;
+        CURLcode res; char *ip;
         curl_easy_setopt(curl, CURLOPT_URL, address.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
         res = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
-        if (!CURLE_OK){
+        if (res!=CURLE_OK){
             cerr<<" Error text  = "<<curl_easy_strerror(res);
             exit(1);
         }
+        if ((res == CURLE_OK ) && !curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &ip) && ip) {
+            cerr<<("IP: %s\n", ip);
+        }
+
     }
-    curl_global_init(CURL_GLOBAL_ALL);
-    return read_input(buffer, false);
+    curl_easy_cleanup(curl);
+    return read_input(buffer,false);
+
 }
 int main(int argc,char* argv[])
 {
