@@ -44,15 +44,33 @@ void svg_text(double left, double baseline, string text){
 void svg_rect(double x, double y, double width, double height,string stroke, string fill){
     cout<<"<rect x='"<<x<<"' y='"<<y<<"' width='"<<width<<"' height='"<<height<<"' stroke='"<<stroke<<"' fill='"<<fill<< "' />";
 }
-void svg_blockwidth(double &BLOCK_WIDTH, bool &block){
-    if(BLOCK_WIDTH < 3  ||  BLOCK_WIDTH > 30){
-        block=true;
+string
+make_info_text() {
+    stringstream buffer;
+    const auto VR = GetVersion();
+    printf("Windows version %u.\n",VR);
+    printf("Windows version %x.\n",VR);
+    DWORD info = VR;
+    DWORD mask = 0x0000ffff;
+    DWORD version = info & mask;
+    DWORD platform = info >> 16;
+    printf("Windows version %u.\n",version);
+    printf("Platform %u.\n",platform);
+    DWORD mask_2 =  0b0000'0000'1111'1111;
+    DWORD info_2 = VR;
+    DWORD version_major = info_2 & mask_2;
+    DWORD version_minor = version >> 8;
+    printf("Version major %u.\n",version_major);
+    printf("Version minor %u.\n",version_minor);
+    if ((info & 0x40000000) == 0) {
+            DWORD build = platform;
+            printf("build %u.\n",build);
+            buffer<<"Windows v " <<version_major<<"."<<version_minor<<" (build "<<build<<")";
     }
-    else{
-        block=false;
-    }
-
+    // TODO: получить имя компьютера, записать в буфер.
+    return buffer.str();
 }
+
 void show_histogram_svg(const vector<size_t>& bins) {
     {
         const auto IMAGE_WIDTH = 400;
@@ -61,16 +79,7 @@ void show_histogram_svg(const vector<size_t>& bins) {
         const auto TEXT_BASELINE = 20;
         const auto TEXT_WIDTH = 50;
         const auto BIN_HEIGHT = 30;
-        double BLOCK_WIDTH;
-        cerr<<"Enter BLOCK_WIDTH : "; cin>>BLOCK_WIDTH; bool block = true;
-        while(block == true){
-            svg_blockwidth(BLOCK_WIDTH,block);
-            if (block == true){
-                cerr<<"Limit! Re Enter Block WIDTH : "; cin>>BLOCK_WIDTH;
-            }
-        }
-
-
+        const auto BLOCK_WIDTH = 10;
         svg_begin(IMAGE_WIDTH, IMAGE_HEIGHT);
         double top = 0;
         double MAX = (IMAGE_WIDTH - TEXT_WIDTH)/BLOCK_WIDTH;
@@ -91,6 +100,7 @@ void show_histogram_svg(const vector<size_t>& bins) {
             svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
             top += BIN_HEIGHT;
         }
+        svg_text(TEXT_LEFT, top + TEXT_BASELINE, make_info_text());
         svg_end();
     }
 }

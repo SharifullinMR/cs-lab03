@@ -40,14 +40,6 @@ vector<size_t> make_histogram(const vector<double> &numbers, size_t bin_count)
 }
 int main()
 {
-    const auto VR = GetVersion();
-    printf("Windows version %u.\n",VR);
-    printf("Windows version %x.\n",VR);
-    DWORD info = VR;
-    DWORD mask = 0b00000000'00000000'11111111'11111111;
-    DWORD version = info & mask;
-    printf("Windows version %u.\n",version);
-    return 0;
     size_t number_count;
     cerr<<"Enter number count:";
     cin >> number_count;
