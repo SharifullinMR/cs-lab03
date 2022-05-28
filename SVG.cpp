@@ -65,16 +65,20 @@ make_info_text() {
     if ((info & 0x40000000) == 0) {
             DWORD build = platform;
             printf("build %u.\n",build);
-            buffer<<"Windows v " <<version_major<<"."<<version_minor<<" (build "<<build<<")";
+            buffer<<"Windows v " <<version_major<<"."<<version_minor<<" (build "<<build<<")"<<endl;
     }
     // TODO: получить имя компьютера, записать в буфер.
+    TCHAR name_pc[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD out = MAX_COMPUTERNAME_LENGTH + 1;
+    GetComputerNameA(name_pc,& out );
+    buffer<<" | Computer PC name: " << name_pc<<endl;
     return buffer.str();
 }
 
 void show_histogram_svg(const vector<size_t>& bins) {
     {
-        const auto IMAGE_WIDTH = 400;
-        const auto IMAGE_HEIGHT = 300;
+        const auto IMAGE_WIDTH = 1000;
+        const auto IMAGE_HEIGHT = 1000;
         const auto TEXT_LEFT = 20;
         const auto TEXT_BASELINE = 20;
         const auto TEXT_WIDTH = 50;
