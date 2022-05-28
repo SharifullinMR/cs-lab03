@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <windows.h>
 #include "histogram.h"
 #include "SVG.h"
 #include <curl/curl.h>
