@@ -45,34 +45,38 @@ void svg_rect(double x, double y, double width, double height,string stroke, str
     cout<<"<rect x='"<<x<<"' y='"<<y<<"' width='"<<width<<"' height='"<<height<<"' stroke='"<<stroke<<"' fill='"<<fill<< "' />";
 }
 string
-make_info_text() {
+make_info_text(char M) {
     stringstream buffer;
-    const auto VR = GetVersion();
-    printf("Windows version %u.\n",VR);
-    printf("Windows version %x.\n",VR);
-    DWORD info = VR;
-    DWORD mask = 0x0000ffff;
-    DWORD version = info & mask;
-    DWORD platform = info >> 16;
-    printf("Windows version %u.\n",version);
-    printf("Platform %u.\n",platform);
-    DWORD mask_2 =  0b0000'0000'1111'1111;
-    DWORD info_2 = VR;
-    DWORD version_major = info_2 & mask_2;
-    DWORD version_minor = version >> 8;
-    printf("Version major %u.\n",version_major);
-    printf("Version minor %u.\n",version_minor);
-    if ((info & 0x40000000) == 0) {
-            DWORD build = platform;
-            printf("build %u.\n",build);
-            buffer<<"Windows v " <<version_major<<"."<<version_minor<<" (build "<<build<<")"<<endl;
+    if (M==1){
+        const auto VR = GetVersion();
+        printf("Windows version %u.\n",VR);
+        printf("Windows version %x.\n",VR);
+        DWORD info = VR;
+        DWORD mask = 0x0000ffff;
+        DWORD version = info & mask;
+        DWORD platform = info >> 16;
+        printf("Windows version %u.\n",version);
+        printf("Platform %u.\n",platform);
+        DWORD mask_2 =  0b0000'0000'1111'1111;
+        DWORD info_2 = VR;
+        DWORD version_major = info_2 & mask_2;
+        DWORD version_minor = version >> 8;
+        printf("Version major %u.\n",version_major);
+        printf("Version minor %u.\n",version_minor);
+        if ((info & 0x40000000) == 0) {
+                DWORD build = platform;
+                printf("build %u.\n",build);
+                buffer<<"Windows v " <<version_major<<"."<<version_minor<<" (build "<<build<<")"<<endl;
+                return buffer.str();
+        }
     }
-    // TODO: получить имя компьютера, записать в буфер.
-    TCHAR name_pc[MAX_COMPUTERNAME_LENGTH + 1];
-    DWORD out = MAX_COMPUTERNAME_LENGTH + 1;
-    GetComputerNameA(name_pc,& out );
-    buffer<<" | Computer PC name: " << name_pc<<endl;
-    return buffer.str();
+    if(M==2){
+        TCHAR name_pc[MAX_COMPUTERNAME_LENGTH + 1];
+        DWORD out = MAX_COMPUTERNAME_LENGTH + 1;
+        GetComputerNameA(name_pc,& out );
+        buffer<<" | Computer PC name: " << name_pc<<endl;
+        return buffer.str();
+    }
 }
 
 void show_histogram_svg(const vector<size_t>& bins) {
@@ -104,7 +108,8 @@ void show_histogram_svg(const vector<size_t>& bins) {
             svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);
             top += BIN_HEIGHT;
         }
-        svg_text(TEXT_LEFT, top + TEXT_BASELINE, make_info_text());
+        svg_text(TEXT_LEFT, top + TEXT_BASELINE, make_info_text(1)); top+=BIN_HEIGHT;
+        svg_text(TEXT_LEFT, top + TEXT_BASELINE, make_info_text(2));
         svg_end();
     }
 }
